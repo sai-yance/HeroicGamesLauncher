@@ -1,0 +1,35 @@
+name: Build Windows installer (custom icon)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-installer:
+    runs-on: windows-2025
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Install project dependencies
+        uses: ./.github/actions/install-deps
+
+      - name: Build the application
+        run: pnpm build
+
+      - name: Apply the custom icon
+        shell: pwsh
+        run: Copy-Item public/win_icon.ico build/win_icon.ico -Force
+
+      - name: Package the Windows installer
+        run: pnpm exec electron-builder --win nsis --x64 --publish never
+
+      - name: Upload the installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Heroic-Custom-Icon-Windows-Installer
+          path: dist/*Setup*.exe
+          if-no-files-found: error
+          retention-days: 14
