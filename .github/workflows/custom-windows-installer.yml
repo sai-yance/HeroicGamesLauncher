@@ -27,7 +27,7 @@ jobs:
         run: pnpm exec electron-builder --win nsis --x64 --publish never
 
       - name: Upload the installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: Heroic-Custom-Icon-Windows-Installer
           path: dist/*Setup*.exe
