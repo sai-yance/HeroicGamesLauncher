@@ -21,7 +21,13 @@ jobs:
 
       - name: Apply the custom icon
         shell: pwsh
-        run: Copy-Item public/custom_win_icon.ico build/win_icon.ico -Force
+        run: |
+          if (Test-Path 'public/custom_win_icon.ico') {
+            Copy-Item public/custom_win_icon.ico build/win_icon.ico -Force
+          } else {
+            Write-Host 'public/custom_win_icon.ico not found; using default public/win_icon.ico'
+            Copy-Item public/win_icon.ico build/win_icon.ico -Force
+          }
 
       - name: Package the Windows installer
         run: pnpm exec electron-builder --win nsis --x64 --publish never
